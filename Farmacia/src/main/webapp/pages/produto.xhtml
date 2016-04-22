@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Listagem de Produtos">
+				<p:dataTable id="tabela" emptyMessage="nenhum registro encontrado!"
+					paginator="true" value="#{produtoBean.produtos}" var="produto"
+					rows="4">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" icon="ui-icon-plus"
+							oncomplete="PF('dialog').show();"
+							actionListener="#{produtoBean.novo}"
+							update=":message :formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Imprimir" icon="ui-icon-print" actionListener="#{produtoBean.imprimir}"/>
+					</f:facet>
+
+					<p:column headerText="Descrição" filterBy="#{produto.descricao}"
+						sortBy="#{produto.descricao}">
+						<h:outputText value="#{produto.descricao}" />
+					</p:column>
+
+					<p:column headerText="Quantidade" sortBy="#{produto.quantidade}">
+						<h:outputText value="#{produto.quantidade}" />
+					</p:column>
+
+					<p:column headerText="preço" sortBy="#{produto.preco}">
+						<h:outputText value="#{produto.preco}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								currencyCode="BRL" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="fabricante"
+						filterBy="#{produto.fabricante.descricao}"
+						sortBy="#{produto.fabricante.descricao}">
+						<h:outputText value="#{produto.fabricante.descricao}" />
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{produtoBean.excluir}"
+							update=":message :formListagem:tabela">
+							<p:confirm header="Deseja Exluir? "
+								message="Deseja Excluir o produto #{produto.descricao} ?"
+								icon="ui-icon-alert" />
+							<f:attribute name="produtoSelecionado" value="#{produto}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{produtoBean.editar}"
+							update=":message :formCadastro:painel"
+							oncomplete="PF('dialog').show();">
+
+							<f:attribute name="produtoSelecionado" value="#{produto}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Produto - Cadastro" widgetVar="dialog"
+			draggable="false" resizable="false" modal="true">
+			<h:form id="formCadastro" enctype="multpart/form-data">
+				<h:panelGrid id="painel" columns="2">
+					<p:outputLabel value="Descrição: " for="descricao" />
+					<p:inputText id="descricao" size="30" maxlength="50"
+						required="true" requiredMessage="O campo descrição é obrigatorio"
+						value="#{produtoBean.produto.descricao}" />
+
+					<p:outputLabel for="quantidade" value="Quantidade: " />
+					<p:inputText id="quantidade" size="10" maxlength="5" type="number"
+						required="true" requiredMessage="O campo quantidade é obrigatorio"
+						value="#{produtoBean.produto.quantidade}"
+						converterMessage="Erro ao converter, digite um numero valido no campo 'Quantidade'!"
+						validatorMessage="O minimo de produtos é 0, não é possivel inserir um valor negativo!">
+						<f:validateLongRange minimum="0" />
+					</p:inputText>
+
+					<p:outputLabel value="Preço: " for="preco" />
+					<p:inputText id="preco" size="30" maxlength="50" type="number"
+						required="true" requiredMessage="O campo preço é obrigatorio"
+						value="#{produtoBean.produto.preco}"
+						converterMessage="Erro ao converter, digite um numero valido no campo 'Preço'"
+						validatorMessage="Digite um preço valido, não é permitido preço negativo! digite um valor entre: 0.01 e 99999.99">
+
+						<f:validateDoubleRange minimum="0.01" maximum="99999.99" />
+					</p:inputText>
+					<p:outputLabel for="fabricante" value="Fabricante: " />
+					<p:selectOneMenu id="fabricante" filter="true"
+						value="#{produtoBean.produto.fabricante}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="O campo fabricante é obrigatorio">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um fabricante" />
+						<f:selectItems value="#{produtoBean.fabricantes}" var="fabricante"
+							itemValue="#{fabricante}" itemLabel="#{fabricante.descricao}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{produtoBean.salvar}"
+						update=":message :formListagem:tabela :formCadastro:painel" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialog').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
