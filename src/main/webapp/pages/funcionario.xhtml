@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+
+		<h:form id="formListagem">
+			<p:panel header="Listagem de Funcionarios">
+				<p:dataTable id="tabela" value="#{funcionarioBean.funcionarios}"
+					var="funcionario" emptyMessage="nenhum registro encontrado!"
+					paginator="true" rows="5">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo"
+							actionListener="#{funcionarioBean.novo}"
+							update=":message formCadastro:painel"
+							oncomplete="PF('dialog').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{funcionario.pessoa.nome}" />
+					</p:column>
+
+					<p:column headerText="CPF">
+						<h:outputText value="#{funcionario.pessoa.cpf}" />
+					</p:column>
+
+
+					<p:column headerText="Data de admissão">
+						<h:outputText value="#{funcionario.dataAdmissao}">
+							<f:convertDateTime locale="pt_BR" />
+						</h:outputText>
+					</p:column>
+
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{funcionarioBean.excluir}"
+							update=":message formListagem:tabela">
+							<p:confirm header="Deseja Exluir? "
+								message="Deseja Excluir o cliente #{cliente.pessoa.nome} ?"
+								icon="ui-icon-alert" />
+							<f:attribute name="funcionarioSelecionado" value="#{funcionario}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{funcionarioBean.editar}"
+							oncomplete="PF('dialog').show();"
+							update=":message :formCadastro:painel">
+
+							<f:attribute name="funcionarioSelecionado" value="#{funcionario}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Funcionario - Cadastro" widgetVar="dialog"
+			draggable="false" resizable="false" modal="true">
+			<h:form id="formCadastro">
+				<h:panelGrid columns="2" id="painel">
+					<p:outputLabel value="Pessoa: " for="pessoa" />
+					<p:selectOneMenu id="pessoa" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{funcionarioBean.funcionario.pessoa}" required="true"
+						requiredMessage="O campo pessoa é obrigatorio">
+						<f:selectItem itemValue="" itemLabel="Selecione uma pessoa" />
+						<f:selectItems value="#{funcionarioBean.pessoas}" var="pessoa"
+							itemValue="#{pessoa}" itemLabel="#{pessoa.nome} - #{pessoa.cpf}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="dtAdmissao" value="Data de admissão: " />
+					<p:calendar id="dtAdmissao"
+						value="#{funcionarioBean.funcionario.dataAdmissao}"
+						required="true"
+						requiredMessage="O campo Data de admissao é obrigatorio!"
+						locale="pt_BR" />
+					<p:outputLabel for="carteiraTrabalho" value="Carteira de trabalho" />
+					<p:inputText id="carteiraTrabalho" value="#{funcionarioBean.funcionario.carteiraTrabalho}" type="text" maxlength="20" size="30" required="true"
+						requiredMessage="O campo carteira de trabalho é obrigatorio!" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{funcionarioBean.salvar}"
+						update=":message :formListagem:tabela :formCadastro:painel" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialog').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

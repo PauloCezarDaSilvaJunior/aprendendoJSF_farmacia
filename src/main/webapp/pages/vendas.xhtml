@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="form">
+			<p:panel header="Produtos">
+				<p:dataTable id="tabelaProduto"
+					emptyMessage="nenhum registro encontrado!" paginator="true"
+					value="#{vendaBean.produtos}" var="produto" rows="4"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Descrição" filterBy="#{produto.descricao}"
+						sortBy="#{produto.descricao}">
+						<h:outputText value="#{produto.descricao}" />
+					</p:column>
+
+					<p:column headerText="Quantidade" sortBy="#{produto.quantidade}">
+						<h:outputText value="#{produto.quantidade}" />
+					</p:column>
+
+					<p:column headerText="preço" sortBy="#{produto.preco}">
+						<h:outputText value="#{produto.preco}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								currencyCode="BRL" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="fabricante"
+						filterBy="#{produto.fabricante.descricao}"
+						sortBy="#{produto.fabricante.descricao}">
+						<h:outputText value="#{produto.fabricante.descricao}" />
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-plus"
+							actionListener="#{vendaBean.adicionar}"
+							update=":form:tabelaCarrinho">
+							<f:attribute name="produtoSelecionado" value="#{produto}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Carrinho de Compras ">
+				<p:dataTable id="tabelaCarrinho"
+					emptyMessage="nenhum registro encontrado!" paginator="true"
+					value="#{vendaBean.itensVenda}" var="itemVenda" rows="3"
+					paginatorPosition="bottom">
+
+
+					<f:facet name="header">
+						<h:outputLabel value="Valor Total: " />
+					</f:facet>
+					<f:facet name="header">
+						<h:outputText value="R$ #{vendaBean.venda.precoTotal} ">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								currencyCode="BRL" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="header">
+						<p:commandButton value="Finalizar"
+							actionListener="#{vendaBean.finalizar}"
+							update=":formFinalizar:painelFinalizar :message"
+							oncomplete="PF('dialog').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+-
+
+				<p:column headerText="Descrição">
+						<h:outputText value="#{itemVenda.produto.descricao}" />
+					</p:column>
+
+
+					<p:column headerText="Preço Un.">
+						<h:outputText value="#{itemVenda.produto.preco}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								currencyCode="BRL" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Qtde.">
+						<h:outputText value="#{itemVenda.quantidade}" />
+					</p:column>
+
+					<p:column headerText="Preço Parcial">
+						<h:outputText value="#{itemVenda.valorParcial}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								currencyCode="BRL" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-minus"
+							actionListener="#{vendaBean.remover}"
+							update=":form:tabelaCarrinho">
+							<f:attribute name="itemSelecionado" value="#{itemVenda}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+		<p:dialog header="Finalizar Venda" widgetVar="dialog"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formFinalizar">
+				<h:panelGrid id="painelFinalizar" columns="2">
+
+					<p:outputLabel for="total" value="Total: " />
+					<h:outputText id="total" value="#{vendaBean.venda.precoTotal}">
+						<f:convertNumber type="currency" currencySymbol="R$"
+							currencyCode="BRL" />
+					</h:outputText>
+
+					<p:outputLabel for="horario" value="Horario: " />
+					<h:outputText id="horario" value="#{vendaBean.venda.horario}">
+						<f:convertDateTime pattern="dd/MM/yyyy - HH:mm" />
+					</h:outputText>
+
+					<p:outputLabel for="funcionario" value="Funcionario: " />
+					<p:selectOneMenu id="funcionario" required="true"
+						requiredMessage="O campo funcionario é obrigatorio! "
+						value="#{vendaBean.venda.funcionario}"
+						converter="omnifaces.SelectItemsConverter" filter="true">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um funcionario" />
+						<f:selectItems value="#{vendaBean.funcionarios}" var="funcionario"
+							itemValue="#{funcionario}" itemLabel="#{funcionario.pessoa.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="cliente" value="Cliente: " />
+					<p:selectOneMenu id="cliente" value="#{vendaBean.venda.cliente}"
+						converter="omnifaces.SelectItemsConverter" filter="true">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um cleinte" />
+						<f:selectItems value="#{vendaBean.clientes}" var="cliente"
+							itemValue="#{cliente}" itemLabel="#{cliente.pessoa.nome}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{vendaBean.salvar}"
+						update=":message :form:tabelaCarrinho :formFinalizar:painelFinalizar :form:tabelaProduto"
+						oncomplete="PF('dialog').hide();" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialog').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
