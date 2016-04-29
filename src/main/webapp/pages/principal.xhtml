@@ -12,34 +12,17 @@
 			<h:outputText
 				value="Bem vindo ao sistema de gerenciamento de Drogaria" />
 		</h1>
-		<p>Lorem ipsum dolor sit amet, in malesuada sit risus neque
-			mollis. Urna enim ornare ac interdum elementum. A a est ipsum mattis
-			amet quis, ipsum varius nunc ac cras eu, sodales eros tortor in ante,
-			nulla donec lacus elit fusce. Quis suscipit. Ligula adipiscing est in
-			mauris at. Justo et nunc donec maecenas veniam at, venenatis nec eget
-			nulla in neque. Ante justo nunc, curabitur justo pellentesque
-			facilisis platea donec erat, per libero amet scelerisque tortor elit,
-			iaculis proin ratione, repellendus tristique maecenas. Faucibus a
-			semper fermentum porttitor nunc, quis lacus, arcu nisl massa morbi
-			tellus. Duis semper, dui sed odio vel convallis vestibulum mauris,
-			metus praesent vestibulum nulla mauris posuere, ut nam nulla vivamus
-			ut sapien, sed tempor. </p>
-			<p>At non magnis vulputate dolor, rhoncus rutrum
-			faucibus suscipit placerat vitae, nibh nunc malesuada wisi cras,
-			parturient vestibulum non sed eget bibendum libero. Ad magna, est
-			purus enim semper, habitant sodales wisi, diam vestibulum non, sem
-			justo et. Pariatur malesuada justo quis magna consectetuer ullam,
-			lobortis posuere per sem enim sit, mattis nisi, integer sem aliquam
-			class lectus sodales, praesent varius. Donec donec potenti libero non
-			eu, orci sit ut proin, etiam ac urna.</p> 
-			<p>Velit nulla id et etiam
-			curabitur, non nascetur placerat massa ac augue wisi, ligula nulla
-			sit, iaculis ac, sit faucibus nulla bibendum luctus augue sem. Felis
-			aliquam blandit praesent penatibus mauris fusce, vestibulum leo
-			iaculis, ut amet, et tortor risus. Aliquet libero, dolor neque
-			volutpat velit vitae sit, nulla nulla. Tempus metus. </p>
-			<p>Suspendissepretium phasellus molestiae a, egestas aliquam interdum duis ante a
-			semper, wisi sapien elit nulla orci, leo etiam in, aliquam vel non in
-			integer ridiculus.</p>
+
+		<p:panel header="Grafico de produtos vendidos"
+			style="width:700px; margin:auto;">
+			<p:chart type="bar" model="#{graficoProdutosVendidos.barModel}"
+				style="height:300px;" />
+		</p:panel>
+
+		<p:panel header="Grafico de vendas dos funcionarios"
+			style="width:700px; margin:auto; margin-top:20px;">
+			<p:chart type="bar" model="#{graficoFunconarioVenda.barModel}"
+				style="height:300px" />
+		</p:panel>
 	</ui:define>
 </ui:composition>

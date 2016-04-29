@@ -3,6 +3,9 @@
 	filter: Alpha(Opacity = 100); /* For IE */
 	opacity: 1.0; /* For all other browsers */
 }
+.semBorda tr, .semBorda td {
+	border: none !important;
+}
 body{
 	background-color: #6495ED;
 }

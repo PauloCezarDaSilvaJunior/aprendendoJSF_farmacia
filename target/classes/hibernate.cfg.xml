@@ -6,13 +6,22 @@
 <hibernate-configuration>
 
 	<session-factory>
-
+		
 		<!-- Database connection settings -->
 		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
 		<property name="connection.url">jdbc:mysql://localhost:3306/drogaria</property>
 		<property name="connection.username">root</property>
 		<property name="connection.password"></property>
-
+		
+		
+		<!-- Database connection settings para a nuvem jelastic -->
+		<!-- 
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://node88974-farmaciaPaulo.jelasticlw.com.br/drogaria</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">XZHcmt55327</property>
+		-->
+		
 		<!-- JDBC connection pool (use the built-in) -->
 		<property name="connection.pool_size">1</property>
 
@@ -29,7 +38,7 @@
 		<property name="show_sql">true</property>
 
 		<!-- Drop and re-create the database schema on startup -->
-		<property name="hbm2ddl.auto">validate</property>
+		<property name="hbm2ddl.auto">update</property>
 
 		<!-- Mapeamento das entidades -->
 		<mapping class="br.com.farmacia.domain.Cidade" />
